@@ -23,8 +23,6 @@
 ══════════════════════════════════════════════════ -->
 <nav class="sidebar" id="sidebar">
 
-  <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">&#9776;</button>
-
   <div class="sidebar-brand">
     <div class="brand-logo">
       <img src="{{ url_for('static', filename='logo.png') }}" alt="StudyFlow Logo" class="brand-logo-img" />
@@ -102,6 +100,9 @@
   </div>
 
 </nav>
+
+<!-- Toggle button — outside sidebar so it stays visible when collapsed -->
+<button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">&#9776;</button>
 
 <!-- ══════════════════════════════════════════════════
      MAIN CONTENT
@@ -193,13 +194,23 @@
   const sidebar = document.getElementById('sidebar');
   const toggle  = document.getElementById('sidebarToggle');
 
-  if (localStorage.getItem('sidebarCollapsed') === 'true') {
-    sidebar.classList.add('collapsed');
+  function applySidebar(collapsed) {
+    if (collapsed) {
+      sidebar.classList.add('collapsed');
+      document.body.classList.add('sidebar-collapsed');
+    } else {
+      sidebar.classList.remove('collapsed');
+      document.body.classList.remove('sidebar-collapsed');
+    }
   }
 
+  // Restore saved state on load
+  applySidebar(localStorage.getItem('sidebarCollapsed') === 'true');
+
   toggle.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    const nowCollapsed = !sidebar.classList.contains('collapsed');
+    applySidebar(nowCollapsed);
+    localStorage.setItem('sidebarCollapsed', nowCollapsed);
   });
 </script>
 </body>
